@@ -2104,6 +2104,7 @@ router.post("/deletefile", middleware, async (req, res) => {
   const chunksCollection = conn.collection("fs.chunks");
   const filesCollection = conn.collection("fs.files");
   const id = req.body.id;
+  const old_file =req.body.old_file
   const clientIP = req.clientIP;
 
   let fileq = await FileUpload.findOne({
@@ -2202,13 +2203,16 @@ router.post("/deletefile", middleware, async (req, res) => {
 
     if (user_type.user_type === "Admin") {
       if (file) {
-        // await FileUpload.update(
-        //   // console.log("inside") STORING deleted_At in SECONDs
-        //   { is_recyclebin: "true", deleted_at: Math.floor(Date.now() / 1000) },
-        //   { where: { id: id } }
-        // );
+        if(old_file==="true"){
+          await FileUpload.update(
+            // console.log("inside") STORING deleted_At in SECONDs
+            { is_recyclebin: "true", deleted_at: Math.floor(Date.now() / 1000) },
+            { where: { id: id } }
+          );
+        }else{
+          await updateFilesToDelete_all_versions(id);
+        }
 
-        await updateFilesToDelete_all_versions(id);
 
         const loggsfolder = await loggs.create({
           user_id: email,
@@ -2257,8 +2261,15 @@ router.post("/deletefile", middleware, async (req, res) => {
       // if (recycle) {
       try {
         if (file) {
-          await updateFilesToDelete_all_versions(id);
-
+          if(old_file==="true"){
+            await FileUpload.update(
+              // console.log("inside") STORING deleted_At in SECONDs
+              { is_recyclebin: "true", deleted_at: Math.floor(Date.now() / 1000) },
+              { where: { id: id } }
+            );
+          }else{
+            await updateFilesToDelete_all_versions(id);
+          }
           const loggsfolder = await loggs.create({
             user_id: email,
             category: "Delete",
