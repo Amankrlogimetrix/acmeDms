@@ -1228,7 +1228,29 @@ router.post("/getfoldernames", middleware, async (req, res) => {
         });
 
         if (doc_types) {
-          file.dataValues.doc_details = doc_types.dataValues;
+          if (doc_types.doctype) {
+            const meta_property_data = await meta_property.findAll({
+              where: {
+                doctype: doc_types.doctype,
+                meta_status: "true",
+              },
+              order: [["createdAt", "ASC"]],
+              attributes: ["fieldname"],
+              raw: true,
+            });
+            console.log(meta_property_data, "_____________meta_property_data3");
+            let result = {};
+
+            for (let i = 0; i < meta_property_data.length; i++) {
+              const fieldname = meta_property_data[i].fieldname;
+              const value = doc_types[`field${i + 1}`];
+              if (value !== undefined) {
+                result[fieldname] = value;
+              }
+            }
+
+            file.dataValues.doc_details = result;
+          }
         } else {
           file.dataValues.doc_details = {};
         }
@@ -1264,7 +1286,7 @@ router.post("/getfoldernames", middleware, async (req, res) => {
           attributes: ["user_id", "createdAt"],
           order: [["timestamp", "DESC"]],
         });
-        let storedUpdateLoggs; 
+        let storedUpdateLoggs;
 
         if (update_loggs) {
           storedUpdateLoggs = { ...update_loggs.dataValues };
@@ -1496,7 +1518,7 @@ router.post("/getfoldernames", middleware, async (req, res) => {
           file.dataValues.user_type = user.user_type;
           file.dataValues.user_email = user.email;
         }
-
+        console.log(file, "____filesfromhereget");
         let doc_types = await uploadfiledoctype.findOne({
           where: {
             file_id: file.id,
@@ -1517,7 +1539,30 @@ router.post("/getfoldernames", middleware, async (req, res) => {
         });
 
         if (doc_types) {
-          file.dataValues.doc_details = doc_types.dataValues;
+          console.log(doc_types.dataValues, "datavalues241243");
+          if (doc_types.doctype) {
+            const meta_property_data = await meta_property.findAll({
+              where: {
+                doctype: doc_types.doctype,
+                meta_status: "true",
+              },
+              order: [["createdAt", "ASC"]],
+              attributes: ["fieldname"],
+              raw: true,
+            });
+            console.log(meta_property_data, "_____________meta_property_data3");
+            let result = {};
+
+            for (let i = 0; i < meta_property_data.length; i++) {
+              const fieldname = meta_property_data[i].fieldname;
+              const value = doc_types[`field${i + 1}`];
+              if (value !== undefined) {
+                result[fieldname] = value;
+              }
+            }
+
+            file.dataValues.doc_details = result;
+          }
         } else {
           file.dataValues.doc_details = {};
         }
@@ -1648,8 +1693,8 @@ router.post("/getteamspace", middleware, async (req, res) => {
           id: id,
           workspace_name: workspace_name,
         },
-        attributes: ["folder_name","id"],
-        raw:true
+        attributes: ["folder_name", "id"],
+        raw: true,
       });
 
       folders = await Folder.findAll({
@@ -1678,7 +1723,6 @@ router.post("/getteamspace", middleware, async (req, res) => {
           "folder_id",
         ],
       });
-      
     } else {
       if (
         workspace.selected_users.includes(userEmail) &&
@@ -1946,7 +1990,7 @@ router.post("/getteamspace", middleware, async (req, res) => {
     await FolderAndFilesSize(folders);
     return res.status(200).json({ folders, files });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).send({ status: false, message: error.message });
   }
 });
@@ -2104,14 +2148,17 @@ router.post("/deletefile", middleware, async (req, res) => {
   const chunksCollection = conn.collection("fs.chunks");
   const filesCollection = conn.collection("fs.files");
   const id = req.body.id;
-  const old_file =req.body.old_file
+  const file = req.body.file;
+  const old_file = req.body.old_file;
   const clientIP = req.clientIP;
-
-  let fileq = await FileUpload.findOne({
-    where: {
-      id: id,
-    },
-  });
+  let fileq;
+  if (file && id) {
+    fileq = await FileUpload.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
   try {
     // const token = req.header("Authorization");
     // // console.log(token,"____deletetoken")
@@ -2123,7 +2170,6 @@ router.post("/deletefile", middleware, async (req, res) => {
     // const user_id = id.id
 
     const folderdata = await Folder.findOne({ where: { id: id } });
-    const file = req.body.file;
     const user_type = await User.findOne({
       where: {
         id: user_id,
@@ -2203,16 +2249,18 @@ router.post("/deletefile", middleware, async (req, res) => {
 
     if (user_type.user_type === "Admin") {
       if (file) {
-        if(old_file==="true"){
+        if (old_file === "true") {
           await FileUpload.update(
             // console.log("inside") STORING deleted_At in SECONDs
-            { is_recyclebin: "true", deleted_at: Math.floor(Date.now() / 1000) },
+            {
+              is_recyclebin: "true",
+              deleted_at: Math.floor(Date.now() / 1000),
+            },
             { where: { id: id } }
           );
-        }else{
+        } else {
           await updateFilesToDelete_all_versions(id);
         }
-
 
         const loggsfolder = await loggs.create({
           user_id: email,
@@ -2261,13 +2309,16 @@ router.post("/deletefile", middleware, async (req, res) => {
       // if (recycle) {
       try {
         if (file) {
-          if(old_file==="true"){
+          if (old_file === "true") {
             await FileUpload.update(
               // console.log("inside") STORING deleted_At in SECONDs
-              { is_recyclebin: "true", deleted_at: Math.floor(Date.now() / 1000) },
+              {
+                is_recyclebin: "true",
+                deleted_at: Math.floor(Date.now() / 1000),
+              },
               { where: { id: id } }
             );
-          }else{
+          } else {
             await updateFilesToDelete_all_versions(id);
           }
           const loggsfolder = await loggs.create({
@@ -2548,9 +2599,9 @@ router.post("/restore", middleware, async (req, res) => {
 
   let current_size;
   if (folder_id && folder_size) {
-    current_size = parseInt(folder_size)/1024;
+    current_size = parseInt(folder_size) / 1024;
   } else if (file_id && file_size) {
-    current_size = parseInt(file_size) /1024;
+    current_size = parseInt(file_size) / 1024;
   }
   try {
     let work_space = await Workspace.findOne({
@@ -2568,7 +2619,7 @@ router.post("/restore", middleware, async (req, res) => {
         total_file_size += parseInt(all_file_size[i].file_size) / 1024;
       }
     }
-    console.log({total_file_size,current_size},"checkfilesize")
+    console.log({ total_file_size, current_size }, "checkfilesize");
     if (work_space.quota <= total_file_size + current_size) {
       return res.status(400).send({
         message: `You Can Not Restore, ${workspace_name} Quota Is Full`,
@@ -3102,26 +3153,26 @@ router.post("/downloadfolders", middleware, async (req, res) => {
     //   `${Foldername.folder_name}`
     // );
 
-    const isWindows = os.platform() === 'win32';
+    const isWindows = os.platform() === "win32";
 
     let folderToZip;
-    
+
     if (isWindows) {
       folderToZip = path.join(
-        process.env.DRIVE, 
-        process.env.FOLDER_NAME , 
+        process.env.DRIVE,
+        process.env.FOLDER_NAME,
         `${Foldername.folder_name}`
       );
     } else {
       folderToZip = path.join(
-        process.env.SINGLE_PATH ,
+        process.env.SINGLE_PATH,
         `${Foldername.folder_name}`
       );
     }
     // Dynamically set the zip file name based on the folder name
     // const zipFileName = `${Foldername.folder_name}.zip`;
     const zipFileName = "zipped-folder.zip";
-    console.log(folderToZip,"foldertoZip")
+    console.log(folderToZip, "foldertoZip");
 
     // Create a writable stream for the zip file
     const output = fs.createWriteStream(zipFileName);
@@ -3147,7 +3198,7 @@ router.post("/downloadfolders", middleware, async (req, res) => {
     archive.directory(folderToZip, false);
     // archive.directory(folderToZip, false, { name: path.relative(baseDir, folderToZip) });
 
-   await archive.finalize();
+    await archive.finalize();
 
     output.on("close", async () => {
       try {
@@ -3186,8 +3237,8 @@ router.post("/downloadfolders", middleware, async (req, res) => {
         }
         // Delete the folder after the download is complete
 
-       await fs.promises.rmdir(folderToZip, { recursive: true, force: true });
-       await fs.promises.rm(zipFileName);
+        await fs.promises.rmdir(folderToZip, { recursive: true, force: true });
+        await fs.promises.rm(zipFileName);
       } catch (error) {
         console.error("Error sending zip file:", error);
         res
@@ -3220,23 +3271,19 @@ router.post("/compress", (req, res) => {
   //   "new_created"
   // );
 
-  
-const isWindows = os.platform() === 'win32';
+  const isWindows = os.platform() === "win32";
 
-let folderToZip;
+  let folderToZip;
 
-if (isWindows) {
-  folderToZip = path.join(
-    process.env.DRIVE, 
-    process.env.FOLDER_NAME , 
-    'new_created'
-  );
-} else {
-  folderToZip = path.join(
-    process.env.SINGLE_PATH ,
-    'new_created'
-  );
-}
+  if (isWindows) {
+    folderToZip = path.join(
+      process.env.DRIVE,
+      process.env.FOLDER_NAME,
+      "new_created"
+    );
+  } else {
+    folderToZip = path.join(process.env.SINGLE_PATH, "new_created");
+  }
   const zipFileName = "zipped-folder.zip";
 
   // Create a writable stream for the zip file
@@ -3463,7 +3510,7 @@ router.post("/updatefolder", middleware, async (req, res) => {
               updateData.file_description = file_doctype.file_description;
             }
             if (levels || workspace_id) {
-              updateData.levels = folder_id !== null ? "1"  :"0";//levels || "0";
+              updateData.levels = folder_id !== null ? "1" : "0"; //levels || "0";
               updateData.workspace_id = workspace_id;
               updateData.folder_id = folder_id || null;
               updateData.workspace_name = workspace_name;
@@ -3676,7 +3723,6 @@ router.post("/stopServer", (req, res) => {
   }
 });
 
-
 // // Function to get memory usage
 function getMemoryUsage() {
   const totalMemory = os.totalmem();
@@ -3685,7 +3731,6 @@ function getMemoryUsage() {
   const memoryUsagePercentage = (usedMemory / totalMemory) * 100;
   return memoryUsagePercentage.toFixed(2);
 }
-
 
 const si = require("systeminformation");
 const SystemInfo = require("../models/system_info");
@@ -3700,6 +3745,7 @@ async function getNetworkUsage() {
   }
 }
 const { exec } = require("child_process");
+const meta_property = require("../models/meta_property");
 
 const isWindows = process.platform === "win32";
 
@@ -3772,7 +3818,6 @@ router.post("/systemInfo", async (req, res) => {
     const memoryUsage = getMemoryUsage();
     let networkUsage = await getNetworkUsage();
 
-
     getDriveDetails(async (error, driveDetails) => {
       if (error) {
         console.error("Error retrieving drive details:", error);
@@ -3808,7 +3853,7 @@ router.post("/systemInfo", async (req, res) => {
         driveDetails,
       };
       let last_10_created = await SystemInfo.findAll({
-        order: [["createdAt", "DESC"]], 
+        order: [["createdAt", "DESC"]],
         attributes: ["networkInfo", "createdAt"],
         limit: 10,
       });
