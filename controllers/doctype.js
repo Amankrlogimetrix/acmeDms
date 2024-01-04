@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const doctype = require("../models/doctype");
 const docmetadata = require("../models/add_metadata");
+const meta_property = require("../models/meta_property");
 
 // POST /doctypes
 router.post("/createdoctype", async (req, res) => {
@@ -20,7 +21,7 @@ router.post("/createdoctype", async (req, res) => {
 router.post("/doclist", async (req, res) => {
   try {
     const workspaceAuths = await doctype.findAll({
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
     });
     return res.status(200).json(workspaceAuths);
   } catch (err) {
@@ -77,13 +78,45 @@ router.post("/deletemetadata", async (req, res) => {
       .json({ success: false, message: "Metadata not found" });
   }
 
+  // docmetadata
+  //   .destroy({
+  //     where: {
+  //       id: id,
+  //     },
+  //   })
+  //   .then(async () => {
+  //     const response = await meta_property.findAll({
+  //       where: {
+  //         doctype: row.doctype,
+
+  //       },
+  //     });
+  //     res
+  //       .status(200)
+  //       .json({ success: true, message: "Metadata deleted successfully" });
+  //   })
+
+  const doctypeToDelete = row.doctype;
+
+  // Step 1: Find all files associated with the doctype
+  const filesToDelete = await meta_property.findAll({
+    where: {
+      doctype: doctypeToDelete,
+    },
+  });
+
+  // Step 2: Delete metadata and associated files
   docmetadata
     .destroy({
       where: {
         id: id,
       },
     })
-    .then(() => {
+    .then(async () => {
+      // Delete associated files
+      const fileDeletionPromises = filesToDelete.map((file) => file.destroy());
+      await Promise.all(fileDeletionPromises);
+
       res
         .status(200)
         .json({ success: true, message: "Metadata deleted successfully" });
@@ -122,19 +155,17 @@ router.post("/docstatus", async (req, res) => {
   try {
     const id = parseInt(req.body.id);
     const user = await doctype.findByPk(id);
-    console.log(user,"userfromdoc")
+    console.log(user, "userfromdoc");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     user.doc_status = req.body.user_status.toString();
     await user.save();
-    return res
-      .status(200)
-      .json({
-        message: `doctype has been ${
-          user.doc_status === "true" ? "enabled" : "disabled"
-        }`,
-      });
+    return res.status(200).json({
+      message: `doctype has been ${
+        user.doc_status === "true" ? "enabled" : "disabled"
+      }`,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });

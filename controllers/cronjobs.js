@@ -438,8 +438,6 @@ const cleanUpBackups = (backupDir, maxBackups, prefix, backupType) => {
           return;
         }
 
-        console.log(`Stats for ${item}:`, stats);
-
         if (stats.isDirectory()) {
           // If it's a directory, remove the directory and its contents
           fs.rmdir(itemPath, { recursive: true }, (rmdirErr) => {
@@ -470,7 +468,6 @@ const cleanUpBackups = (backupDir, maxBackups, prefix, backupType) => {
   });
 };
 
-// Function to extract timestamp from the filename or folder name
 const getTimestampFromItem = (itemName) => {
   const match = itemName.match(/\d{4}-\d{2}-\d{2}_\d{2}-\d{2}/);
   if (match) {
@@ -481,14 +478,13 @@ const getTimestampFromItem = (itemName) => {
 
 const backupDir = path.join("/home", "dmsadmin", "Desktop", "backup");
 
-// Function to execute PostgreSQL backup
 const executePostgresBackup = (backupDir) => {
   const timestamp = moment().format("YYYY-MM-DD_HH-mm");
   const backupFileName = `${process.env.POSTGRES_DB}_backup_${timestamp}`;
   const backupFilePath = path.join(backupDir, "postgresBackup", backupFileName);
 
-  //   const pgDumpCommand = `PGPASSWORD=${process.env.POSTGRES_PASSWORD} pg_dump --username=${process.env.POSTGRES_USER} --host=${process.env.POSTGRES_HOST} --port=${process.env.POSTGRES_PORT} --format=plain --file=${backupFilePath} ${process.env.POSTGRES_DB}`;
-  const pgDumpCommand = `PGPASSWORD=Dms@1234 pg_dumpall --username=dmsadminsql --host=10.10.0.60 --port=5432 --file=${backupFilePath}.sql`;
+  const pgDumpCommand = `PGPASSWORD=${process.env.POSTGRES_PASSWORD} pg_dump --username=${process.env.POSTGRES_USER} --host=${process.env.POSTGRES_HOST} --port=${process.env.POSTGRES_PORT} --format=plain --file=${backupFilePath} ${process.env.POSTGRES_DB}`;
+  // const pgDumpCommand = `PGPASSWORD=Dms@1234 pg_dumpall --username=dmsadminsql --host=10.10.0.60 --port=5432 --file=${backupFilePath}.sql`;
 
   exec(pgDumpCommand, (error, stdout, stderr) => {
     if (error) {
@@ -507,7 +503,6 @@ const executePostgresBackup = (backupDir) => {
   });
 };
 
-// Function to execute MongoDB backup
 const executeMongoBackup = (backupDir) => {
   const timestamp = moment().format("YYYY-MM-DD_HH-mm");
   const backupDirectoryName = `mongo_backup_${timestamp}`;
@@ -583,7 +578,7 @@ const databaseBakup = (backupDir) => {
         zipFilePath,
         [
           {
-            name: "PostgresBackup",
+            name: `${process.env.POSTGRES_DB}_backup`,
             path: getLatestBackupDirectory(backupDir, "postgres"),
           },
           {
@@ -593,6 +588,8 @@ const databaseBakup = (backupDir) => {
         ],
         () => {
           console.log("Zip is completed sucessfully.");
+          cleanUpBackups(backupDir, 4, "DB_backups_", "/");
+
           // Upload the zip file to FTP after it's created
 
           // uploadToFTP(zipFilePath, `${process.env.PATH_ON_FTP}${zipFileName}`);
@@ -693,6 +690,7 @@ const backupCode = (backupDir) => {
   const zipFilePath = path.join(backupDir, "codeBackup", zipFileName);
   zipAndDeleteFolder(backupDirectoryPath, zipFilePath, () => {
     console.log("Code backup completed successfully.");
+    cleanUpBackups(backupDir, 4, "code_backup_", "codeBackup");
   });
 };
 
@@ -772,9 +770,8 @@ const deleteDirectoryRecursive = (directoryPath) => {
 cron.schedule("59 19 * * *", fetchDataFromUserDatabase);
 cron.schedule("35 18 * * *", deactive_user_and_guest);
 cron.schedule("*/5 * * * *", system_info);
-cron.schedule("30 18 * * *", () => databaseBakup(backupDir));
-// cron.schedule("0 0 * * 0", () => backupCode(backupDir));
-cron.schedule("25 18 * * *", () => backupCode(backupDir));
+cron.schedule("00 23 * * *", () => databaseBakup(backupDir));
+cron.schedule("0 0 * * 0", () => backupCode(backupDir));
 
 const cornFunctionExecute = () => {
   const backupDir = path.join("/home", "dmsadmin", "Desktop", "backup");
