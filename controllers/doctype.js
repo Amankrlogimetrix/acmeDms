@@ -3,6 +3,7 @@ const router = express.Router();
 const doctype = require("../models/doctype");
 const docmetadata = require("../models/add_metadata");
 const meta_property = require("../models/meta_property");
+const { Op } = require("sequelize");
 
 // POST /doctypes
 router.post("/createdoctype", async (req, res) => {
@@ -50,13 +51,65 @@ router.post("/createmetadata", async (req, res) => {
     const cabinet_name = req.body.cabinet_name;
     const workspace_name = req.body.workspace_name;
     const metadata_name = req.body.metadata_name;
+    let check_meta_data = await docmetadata.findOne({
+      where: {
+        doctype: doctype,
+        [Op.or]: [
+          { cabinet_name: cabinet_name },
+          { workspace_name: workspace_name },
+        ],
+      },
+    });
+
+    // if (check_meta_data) {
+    //   // Check which condition is satisfied
+    //   if (
+    //     check_meta_data.cabinet_name === cabinet_name &&
+    //     check_meta_data.workspace_name === workspace_name &&
+    //     check_meta_data.doctype === doctype
+    //   ) {
+    //     return res
+    //       .status(400)
+    //       .json({ success: false, message: "Please make changes to doctype" });
+    //   } else if (check_meta_data.cabinet_name === cabinet_name) {
+    //     return res.status(400).json({
+    //       success: false,
+    //       message: "Please make changes to cabinet_name",
+    //     });
+    //   } else if (check_meta_data.workspace_name === workspace_name) {
+    //     return res.status(400).json({
+    //       success: false,
+    //       message: "Please make changes to workspace_name",
+    //     });
+    //   } else {
+    //     return res
+    //       .status(500)
+    //       .json({ success: false, message: "Unexpected condition" });
+    //   }
+    // }
+    if (check_meta_data) {
+      const message =
+        check_meta_data.cabinet_name === cabinet_name &&
+        check_meta_data.workspace_name === workspace_name &&
+        check_meta_data.doctype === doctype
+          ? "Please make changes to doctype"
+          : check_meta_data.cabinet_name === cabinet_name
+          ? "Please make changes to cabinet_name"
+          : check_meta_data.workspace_name === workspace_name
+          ? "Please make changes to workspace_name"
+          : "Unexpected condition";
+
+      return res.status(400).json({ success: false, message });
+    }
     const newmetadataType = await docmetadata.create({
       cabinet_name: cabinet_name,
       workspace_name: workspace_name,
       doctype: doctype,
       metadata_name: metadata_name,
     });
-    return res.status(201).json(newmetadataType);
+    return res
+      .status(201)
+      .json({ message: "Doc Metadata Created Sucessfully.", newmetadataType });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
@@ -96,7 +149,7 @@ router.post("/deletemetadata", async (req, res) => {
   //       .json({ success: true, message: "Metadata deleted successfully" });
   //   })
 
-  const doctypeToDelete = row.doctype;
+  const doctypeToDelete = row.id.toString();
 
   // Step 1: Find all files associated with the doctype
   const filesToDelete = await meta_property.findAll({

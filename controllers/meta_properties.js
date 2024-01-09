@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const meta_property = require("../models/meta_property");
+const docmetadata = require("../models/add_metadata");
 
 router.post("/metaproperty", async (req, res) => {
   const id = req.body.id;
   const fieldname = req.body.fieldname;
   const fieldtype = req.body.fieldtype;
   const doctype = req.body.doctype;
-  const docmetaid = req.body.meta_id;
+  const docmetaid = JSON.stringify(req.body.meta_id);
   const metadata_name = req.body.metadata_name;
   const metaproperties = req.body.metaproperties;
 
@@ -39,7 +40,7 @@ router.post("/metaproperty", async (req, res) => {
   } else {
     try {
       const response = await meta_property.create({
-        meta_id: docmetaid,
+        metadata_id: docmetaid,
         doctype: doctype,
         metadata_name: metadata_name,
         fieldname: fieldname,
@@ -78,26 +79,36 @@ router.post("metaproperties", async (req, res) => {
 router.post("/getmetaproperties", async (req, res) => {
   try {
     const doctype = req.body.doctype;
+    const workspace_name = req.body.workspace_name;
+    console.log({ doctype, workspace_name }, "__req.body");
+    const meta_data = await docmetadata.findOne({
+      where: {
+        doctype: doctype,
+        workspace_name: workspace_name,
+      },
+    });
+    if (!meta_data) {
+      return res.status(404).send({ message: "No Meta Data found" });
+    }
+    const meta_data_id = meta_data.id.toString();
     const response = await meta_property.findAll({
       where: {
         doctype: doctype,
+        metadata_id: meta_data_id,
         meta_status: "true",
       },
       order: [["createdAt", "ASC"]],
     });
     return res.status(201).json(response);
-    // console.log(response,"___")
   } catch (error) {
     return res.status(500).json({ message: "Server Error metaPropertyget" });
   }
 });
 
-// router.post('/getproperties',async(req,res)=>{
-//     const response = await
-// })
 
 router.post("/getproperties", async (req, res) => {
   const doctype = req.body.doctype;
+  const meta_id = JSON.stringify(req.body.meta_id);
   try {
     const response = await meta_property.findAll({
       attributes: [
@@ -109,6 +120,7 @@ router.post("/getproperties", async (req, res) => {
       ], // Specify the attributes you want to retrieve
       where: {
         doctype: doctype,
+        metadata_id: meta_id,
       },
     });
     return res.status(200).json(response);

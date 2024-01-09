@@ -210,19 +210,10 @@ function dynamicUploadSpeedLimit(req, res, next) {
 
       let limiterTime = Math.floor(desiredTimeInSeconds);
 
-      // Custom middleware to introduce a delay
-      // const uploadLimiter = (req, res, next) => {
-      //   setTimeout(() => {
-      //     console.log("________uploaded_by_defined_speed_Limit.")
-      //     next();
-
-      //   }, limiterTime ); // Convert seconds to milliseconds
-      // };
-
+    
       const uploadLimiter = (req, res, next) => {
         return new Promise((resolve) => {
           setTimeout(() => {
-            // console.log("________uploaded_by_defined_speed_Limit.")
             resolve();
           }, limiterTime);
         }).then(() => next());
@@ -251,10 +242,10 @@ function dynamicUploadSpeedLimit(req, res, next) {
 
       uploadLimiter(req, res, next);
     } else {
-      next(); // If the first element is not a valid number, proceed without rate limiting
+      next(); 
     }
   } else {
-    next(); // If the array is empty or not present, proceed without rate limiting
+    next(); 
   }
 }
 
@@ -1518,7 +1509,6 @@ router.post("/getfoldernames", middleware, async (req, res) => {
           file.dataValues.user_type = user.user_type;
           file.dataValues.user_email = user.email;
         }
-        console.log(file, "____filesfromhereget");
         let doc_types = await uploadfiledoctype.findOne({
           where: {
             file_id: file.id,
@@ -1539,7 +1529,6 @@ router.post("/getfoldernames", middleware, async (req, res) => {
         });
 
         if (doc_types) {
-          console.log(doc_types.dataValues, "datavalues241243");
           if (doc_types.doctype) {
             const meta_property_data = await meta_property.findAll({
               where: {
@@ -1550,7 +1539,6 @@ router.post("/getfoldernames", middleware, async (req, res) => {
               attributes: ["fieldname"],
               raw: true,
             });
-            console.log(meta_property_data, "_____________meta_property_data3");
             let result = {};
 
             for (let i = 0; i < meta_property_data.length; i++) {

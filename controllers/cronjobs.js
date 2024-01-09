@@ -10,8 +10,10 @@ const Policy = require("../models/policies/policy");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const path = require("path");
+const { Op } = require("sequelize");
+const si = require("systeminformation");
+const SystemInfo = require("../models/system_info");
 const fs = require("fs");
-const fse = require("fs-extra");
 const archiver = require("archiver");
 const { exec } = require("child_process");
 require("dotenv").config();
@@ -287,8 +289,7 @@ function getMemoryUsage() {
   const memoryUsagePercentage = (usedMemory / totalMemory) * 100;
   return memoryUsagePercentage.toFixed(2);
 }
-const si = require("systeminformation");
-const SystemInfo = require("../models/system_info");
+
 
 async function getNetworkUsage() {
   try {

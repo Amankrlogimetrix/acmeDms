@@ -199,7 +199,7 @@ router.post("/logout", async (req, res) => {
       timestamp: Date.now(),
       system_ip: clientIP,
     });
-    return res.status(200).json({ message: "true" });
+    return res.status(200).json({ message: "true" ,message:"Logout Sucessfully."});
   } catch (error) {
     return res.status(500).json({ success: false, message: "server error" });
   }
