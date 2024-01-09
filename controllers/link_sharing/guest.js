@@ -458,8 +458,6 @@ router.get("/approve", async (req, res) => {
     const { id, user_email, action, workspace_name, workspace_type } =
       req.query;
     let queryEmail = req.query.email;
-    // let id  = req.query.id
-    // let user_email = req.query.user_email
 
     const user_details = await User.findOne({
       where: {
@@ -478,7 +476,7 @@ router.get("/approve", async (req, res) => {
 
     if (action === "approved" && is_approved_column) {
       let guestData = await Guest.update(
-        { [is_approved_column]: true }, // Use true (boolean) instead of "true" (string)
+        { [is_approved_column]: "true" }, // Use true (boolean) instead of "true" (string)
         {
           where: {
             id: id,
@@ -537,7 +535,6 @@ router.get("/approve", async (req, res) => {
       return res.status(200).send({ message: "Approval Denied" });
     }
   } catch (error) {
-    console.log(error.message, "_________message");
     return res.status(500).send({ message: "server error" });
   }
 });

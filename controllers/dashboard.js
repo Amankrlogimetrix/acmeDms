@@ -68,7 +68,6 @@ router.post("/countworkspace", middleware, async (req, res) => {
         },
       });
     } else {
-      console.log("____****");
       files = await Fileupload.count({
         where: {
           user_id: user_id,

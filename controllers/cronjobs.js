@@ -542,7 +542,6 @@ const uploadToFTP = (localFilePath, remoteFilePath) => {
 const zipDirectory = (destination, entries, callback) => {
   const output = fs.createWriteStream(destination);
   const archive = archiver("zip", { zlib: { level: 9 } });
-  console.log(destination, "destination");
   archive.on("error", (err) => {
     throw err;
   });

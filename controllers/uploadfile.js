@@ -9,6 +9,7 @@ const uploadfiledoctype = require("../models/uploadfilesdoctype");
 const { Op, where } = require("sequelize");
 const Guest = require("../models/link_sharing/linksharing");
 const Guestsignup = require("../models/link_sharing/guestsignup");
+const metaData = require("../models/add_metadata")
 // const db = require("../util/mongodb");
 const { Sequelize } = require("sequelize");
 
@@ -493,7 +494,6 @@ router.post(
           field9: modifiedFields ? modifiedFields.field9 : null,
           field10: modifiedFields ? modifiedFields.field10 : null,
         });
-        console.log(newFile, "newFile");
         let uploadedBy;
         if (newFile.guest_id && newFile.user_id === null) {
           uploadedBy = "By Guest";
@@ -589,7 +589,6 @@ router.post("/createfolder", middleware, upload.none(), async (req, res) => {
     } else {
       guest_id = req.decodedToken.user.id;
     }
-    console.log(user_details, "userDetails");
 
     // let user_id;
     // // let guest_id;
@@ -1220,16 +1219,25 @@ router.post("/getfoldernames", middleware, async (req, res) => {
 
         if (doc_types) {
           if (doc_types.doctype) {
+            const meta_data = await metaData.findOne({
+              where:{
+                doctype:doc_types.doctype,
+                workspace_name:file.workspace_name
+              },
+              attributes:["id"],
+              raw:true
+            })
+            const meta_id = meta_data.id.toString()
             const meta_property_data = await meta_property.findAll({
               where: {
                 doctype: doc_types.doctype,
+                metadata_id:meta_id,
                 meta_status: "true",
               },
               order: [["createdAt", "ASC"]],
               attributes: ["fieldname"],
               raw: true,
             });
-            console.log(meta_property_data, "_____________meta_property_data3");
             let result = {};
 
             for (let i = 0; i < meta_property_data.length; i++) {
@@ -1530,9 +1538,20 @@ router.post("/getfoldernames", middleware, async (req, res) => {
 
         if (doc_types) {
           if (doc_types.doctype) {
+            const meta_data = await metaData.findOne({
+              where:{
+                doctype:doc_types.doctype,
+                workspace_name:file.workspace_name
+              },
+              attributes:["id"],
+              raw:true
+            })
+            console.log(meta_data,"metaData___")
+            const meta_id = meta_data.id.toString()
             const meta_property_data = await meta_property.findAll({
               where: {
                 doctype: doc_types.doctype,
+                metadata_id:meta_id,
                 meta_status: "true",
               },
               order: [["createdAt", "ASC"]],
@@ -1540,6 +1559,7 @@ router.post("/getfoldernames", middleware, async (req, res) => {
               raw: true,
             });
             let result = {};
+
 
             for (let i = 0; i < meta_property_data.length; i++) {
               const fieldname = meta_property_data[i].fieldname;
