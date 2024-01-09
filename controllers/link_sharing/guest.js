@@ -53,7 +53,7 @@ router.post("/guestsignup", middleware, async (req, res) => {
   if (!email) {
     return res
       .status(400)
-      .send({ message: "Please enter Email Before sharing" });
+      .send({ message: "Please Enter Email Before Sharing" });
   }
   // const token = req.header("Authorization");
 
@@ -158,7 +158,7 @@ router.post("/guestsignup", middleware, async (req, res) => {
         if (error) {
           return res.status(500).json({
             success: false,
-            message: "An error occurred while sending the email",
+            message: "An Error Occurred While Sending The Email",
           });
         } else {
           let storeName;
@@ -199,7 +199,7 @@ router.post("/guestsignup", middleware, async (req, res) => {
           });
           return res
             .status(200)
-            .json({ success: true, message: "Link sent successfully" });
+            .json({ success: true, message: "Link Sent Successfully" });
         }
       });
     } else {
@@ -412,7 +412,7 @@ router.post("/guestsignup", middleware, async (req, res) => {
         });
         if (!workSpaceCheck) {
           return res.status(404).send({
-            message: `${workspace_name}  ${workspace_type} is not available in workspace database`,
+            message: `${workspace_name}  ${workspace_type} Is Not Available In Workspace Database`,
           });
         }
         if (!workSpaceCheck.selected_users.includes(user_email)) {
@@ -442,12 +442,12 @@ router.post("/guestsignup", middleware, async (req, res) => {
       });
       return res
         .status(200)
-        .json({ message: "file sent to user successfully" });
+        .json({ message: "File Sent To User Successfully" });
     }
   } catch (error) {
     return res.status(500).json({
       status: false,
-      message: "An error occurred while processing the request",
+      message: "An Error Occurred While Processing The Request",
     });
   }
 });
@@ -497,7 +497,7 @@ router.get("/approve", async (req, res) => {
         });
         if (!workSpaceCheck) {
           return res.status(404).send({
-            message: `${workspace_name}  ${workspace_type} is not available in workspace database`,
+            message: `${workspace_name}  ${workspace_type} Is Not Available In Workspace Database`,
           });
         }
         if (!workSpaceCheck.selected_users.includes(user_email)) {
@@ -521,7 +521,7 @@ router.get("/approve", async (req, res) => {
 
       return res
         .status(200)
-        .send({ message: "Approval processed successfully" });
+        .send({ message: "Approval Processed Successfully" });
     } else if (action === "denied" && is_approved_column) {
       await Guest.update(
         { [is_approved_column]: "denied" },
@@ -535,7 +535,7 @@ router.get("/approve", async (req, res) => {
       return res.status(200).send({ message: "Approval Denied" });
     }
   } catch (error) {
-    return res.status(500).send({ message: "server error" });
+    return res.status(500).send({ message: "Server Error" });
   }
 });
 
@@ -582,12 +582,12 @@ router.post("/guestlogin", async (req, res) => {
       .catch((err) => {
         return res
           .status(404)
-          .json({ success: false, message: "password is wrong" });
+          .json({ success: false, message: "Incorrect Password" });
       });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "An error occurred while processing the request",
+      message: "An Error Occurred While Processing The Request",
     });
   }
 });
@@ -1054,7 +1054,7 @@ router.post("/guestdata", middleware, async (req, res) => {
     console.error("Error retrieving folder names:", error);
     return res
       .status(500)
-      .json({ message: "An error occurred while retrieving folder names." });
+      .json({ message: "An Error Occurred While Retrieving Folder Names" });
   }
 });
 

@@ -14,7 +14,7 @@ exports.add_cabinet = async (req, res) =>{
       cabinet = await Cabinet.findOne({ where: { id: id } });
       if (!cabinet) {
         return res.status(404).json({
-          message: 'Cabinet not found'
+          message: 'Cabinet Not Found'
         });
       }
       await Cabinet.update({
@@ -31,7 +31,7 @@ exports.add_cabinet = async (req, res) =>{
       });
       if (existingCabinet) {
         return res.status(409).json({
-          message: 'Cabinet name already exists'
+          message: 'Cabinet Name Already Exists'
         });
       }
       // if (!fs.existsSync(cabinetPath)) {
@@ -44,13 +44,13 @@ exports.add_cabinet = async (req, res) =>{
       });
     }
     return res.status(200).json({
-      message: 'Cabinet updated/created successfully',
+      message: `Cabinet ${id ? 'Updated' : 'Created'} Successfully`,
       cabinet: cabinet
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: 'Error updating/creating cabinet'
+      message: `Error ${id ? 'updating' : 'creating'} cabinet: ${error.message || 'Unknown error'}`
     });
   }
 };
@@ -63,19 +63,19 @@ exports.deletecabinet=async(req,res)=>{
       const cabinet = await Cabinet.findOne({ where: { id: id } });
       if (!cabinet) {
         return res.status(404).json({
-          message: 'Cabinet not found'
+          message: 'Cabinet Not Found'
         });
       }
   
       await Cabinet.destroy({ where: { id: id } });
   
       return res.status(200).json({
-        message: 'Cabinet deleted successfully'
+        message: 'Cabinet Deleted Successfully'
       });
     } catch (error) {
       console.error(error);
       return res.status(500).json({
-        message: 'Error deleting cabinet'
+        message: 'Error Deleting Cabinet'
       });
     }
   };
@@ -93,9 +93,9 @@ exports.deletecabinet=async(req,res)=>{
       //   row.path = normalForm;
       // });
       if(data.length == 0){
-        return res.status(404).send({message:"Cabinet not found"})
+        return res.status(404).send({message:"Cabinet Not Found"})
       }
-      return res.status(200).json({ message: "success", data });
+      return res.status(200).json({ message: "Success", data });
     } catch (error) {
       return res.status(500).json({ success: false, message: "Server Error" });
     }

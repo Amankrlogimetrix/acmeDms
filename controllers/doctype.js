@@ -26,7 +26,7 @@ router.post("/doclist", async (req, res) => {
     });
     return res.status(200).json(workspaceAuths);
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -35,10 +35,10 @@ router.post("/deletedoc", async (req, res) => {
     const id = req.body.id;
     const docType = await doctype.findByPk(id);
     if (!docType) {
-      return res.status(404).json({ message: "Document type not found" });
+      return res.status(404).json({ message: "Document Type Not Found" });
     }
     await docType.destroy();
-    return res.status(204).json({ message: "Document type deleted" });
+    return res.status(204).json({ message: "Document Type Deleted" });
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
   }
@@ -92,12 +92,12 @@ router.post("/createmetadata", async (req, res) => {
         check_meta_data.cabinet_name === cabinet_name &&
         check_meta_data.workspace_name === workspace_name &&
         check_meta_data.doctype === doctype
-          ? "Please make changes to doctype"
+          ? "Please Make Changes To Doctype"
           : check_meta_data.cabinet_name === cabinet_name
-          ? "Please make changes to cabinet_name"
+          ? "Please Make Changes To Cabinet_name"
           : check_meta_data.workspace_name === workspace_name
-          ? "Please make changes to workspace_name"
-          : "Unexpected condition";
+          ? "Please Make Changes To Workspace_name"
+          : "Unexpected Condition";
 
       return res.status(400).json({ success: false, message });
     }
@@ -111,7 +111,7 @@ router.post("/createmetadata", async (req, res) => {
       .status(201)
       .json({ message: "Doc Metadata Created Sucessfully.", newmetadataType });
   } catch (error) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -128,7 +128,7 @@ router.post("/deletemetadata", async (req, res) => {
   if (!row) {
     return res
       .status(404)
-      .json({ success: false, message: "Metadata not found" });
+      .json({ success: false, message: "Metadata Not Found" });
   }
 
   // docmetadata
@@ -172,12 +172,12 @@ router.post("/deletemetadata", async (req, res) => {
 
       res
         .status(200)
-        .json({ success: true, message: "Metadata deleted successfully" });
+        .json({ success: true, message: "Metadata Deleted Successfully" });
     })
     .catch(() => {
       res
         .status(500)
-        .json({ success: false, message: "Internal server error" });
+        .json({ success: false, message: "Internal Server Error" });
     });
 });
 
@@ -186,7 +186,7 @@ router.post("/metalist", async (req, res) => {
     const workspaceAuths = await docmetadata.findAll({});
     return res.status(200).json(workspaceAuths);
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -200,7 +200,7 @@ router.post("/metaform", async (req, res) => {
     });
     return res.status(200).json(docmeta);
   } catch (error) {
-    return res.status(500).json({ message: "error in metaform api" });
+    return res.status(500).json({ message: "Error In Metaform Api" });
   }
 });
 
@@ -209,18 +209,18 @@ router.post("/docstatus", async (req, res) => {
     const id = parseInt(req.body.id);
     const user = await doctype.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User Not Found" });
     }
     user.doc_status = req.body.user_status.toString();
     await user.save();
     return res.status(200).json({
-      message: `doctype has been ${
-        user.doc_status === "true" ? "enabled" : "disabled"
+      message: `Doctype Has Been ${
+        user.doc_status === "true" ? "Enabled" : "Disabled"
       }`,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 module.exports = router;

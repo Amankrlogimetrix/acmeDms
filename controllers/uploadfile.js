@@ -110,17 +110,17 @@ const checkFileSize = async (req, res, next) => {
     if (!user_policy) {
       return res
         .status(400)
-        .send({ message: "You are not allowed to upload file" });
+        .send({ message: "You Are Not Allowed To Upload File" });
     }
     if (user_policy.dataValues.properties_name.length <= 0) {
       return res
         .status(400)
-        .send({ message: "You are not allowed to upload file" });
+        .send({ message: "You Are Not Allowed To Upload File" });
     } else if (
       !user_policy.dataValues.properties_name.includes(fileExtension)
     ) {
       return res.status(400).send({
-        message: `You are not Allowed to upload ${fileExtension} file`,
+        message: `You Are Not Allowed To Upload ${fileExtension} File`,
       });
     } else {
       req.user_policy = user_policy.dataValues.no_of_versions;
@@ -328,7 +328,7 @@ router.post(
     if (file.length == 0) {
       return res
         .status(400)
-        .send({ message: "Please choose a file to upload." });
+        .send({ message: "Please Choose A File To Upload." });
     }
 
     const filedataw = file[0].size / 1024;
@@ -418,12 +418,12 @@ router.post(
           ) {
             return res
               .status(404)
-              .send({ message: `${file_name}, Already Exist.` });
+              .send({ message: `${file_name}, Already Exist` });
           }
 
           if (filesWithSameName.length >= req.user_policy) {
             return res.status(400).send({
-              message: `You can upload up to ${req.user_policy} versions.`,
+              message: `You Can Upload Up To ${req.user_policy} Versions`,
             });
           }
         }
@@ -615,7 +615,7 @@ router.post("/createfolder", middleware, upload.none(), async (req, res) => {
       // Find the folder with the provided folder_id
       const parentFolder = await Folder.findOne({ where: { id: folder_id } });
       if (!parentFolder) {
-        return res.status(404).json({ message: "Parent folder not found." });
+        return res.status(404).json({ message: "Parent Folder Not Found." });
       }
 
       // Increment the level of the parent folder by 1
@@ -659,7 +659,7 @@ router.post("/createfolder", middleware, upload.none(), async (req, res) => {
       });
       return res
         .status(201)
-        .send({ message: "SUB_Folder created successfully.", folder });
+        .send({ message: "SUB_Folder Created Successfully.", folder });
     } else {
       let folder_check = await Folder.findOne({
         where: {
@@ -703,7 +703,6 @@ router.post("/createfolder", middleware, upload.none(), async (req, res) => {
       .json({ message: "Folder Created Successfully.", folder });
   } catch (error) {
     // Handle any errors that occur during the process
-    console.error("Error creating folder:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 });
@@ -1620,7 +1619,7 @@ router.post("/getfoldernames", middleware, async (req, res) => {
       return res.status(200).json({ folders, files: latestFiles });
     }
   } catch (error) {
-    console.error("Error retrieving folder names:", error);
+    console.error("Error Retrieving Folder Names:", error);
     return res.status(500).json({ message: error.message });
   }
 });
@@ -2112,7 +2111,7 @@ router.post("/filedata", middleware, async (req, res) => {
     });
     // console.log(file.data.buffer,"_____filesvds")
     if (!file) {
-      return res.status(404).json({ message: "File not found" });
+      return res.status(404).json({ message: "File Not Found" });
     }
     await FileUpload.findAll({
       where: {
@@ -2141,12 +2140,12 @@ router.post("/filedata", middleware, async (req, res) => {
       .catch((err) => {
         return res
           .status(500)
-          .json({ message: "An error occurred while retrieving file names." });
+          .json({ message: "An Error Occurred While Retrieving File Names" });
       });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "An error occurred while retrieving file names." });
+      .json({ message: "An Error Occurred While Retrieving File Names" });
   }
 });
 
@@ -2277,7 +2276,7 @@ router.post("/deletefile", middleware, async (req, res) => {
           timestamp: Date.now(),
           system_ip: clientIP,
         });
-        return res.status(200).json({ message: "file delete Successfully" });
+        return res.status(200).json({ message: "File Delete Successfully" });
       } else {
         // Update the folder to mark it as "recycle"
         const [no_of_rows] = await Folder.update(
@@ -2286,7 +2285,7 @@ router.post("/deletefile", middleware, async (req, res) => {
         );
 
         if (no_of_rows === 0) {
-          return res.status(404).json({ message: "Folder not found" });
+          return res.status(404).json({ message: "Folder Not Found" });
         }
 
         // Find the initial folder
@@ -2303,7 +2302,7 @@ router.post("/deletefile", middleware, async (req, res) => {
           system_ip: clientIP,
         });
       }
-      return res.status(200).json({ message: "folder deleted successfully" });
+      return res.status(200).json({ message: "Folder Deleted Successfully" });
     } else {
       // const recycle = await Policy.findOne({
       //   where: {
@@ -2336,7 +2335,7 @@ router.post("/deletefile", middleware, async (req, res) => {
             timestamp: Date.now(),
             system_ip: clientIP,
           });
-          return res.status(200).json({ message: "file delete Successfully." });
+          return res.status(200).json({ message: "File Delete Successfully." });
         } else {
           const initial_updatedFolder = await Folder.findOne({
             where: { id: id },
@@ -2351,7 +2350,7 @@ router.post("/deletefile", middleware, async (req, res) => {
           });
           return res
             .status(200)
-            .send({ message: " folder deleted Successfully." });
+            .send({ message: "Folder Deleted Successfully." });
         }
       } catch (error) {
         return res.status(500).json({ message: "Server Error." });
@@ -2427,7 +2426,7 @@ router.post("/deletefile", middleware, async (req, res) => {
       // }
     }
   } catch (error) {
-    return res.status(500).json({ message: "server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -2583,7 +2582,7 @@ router.post("/getrecycle", middleware, async (req, res) => {
       }
     }
 
-    return res.status(200).json({ message: "success", data });
+    return res.status(200).json({ message: "Success", data });
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
   }
@@ -2627,7 +2626,6 @@ router.post("/restore", middleware, async (req, res) => {
         total_file_size += parseInt(all_file_size[i].file_size) / 1024;
       }
     }
-    console.log({ total_file_size, current_size }, "checkfilesize");
     if (work_space.quota <= total_file_size + current_size) {
       return res.status(400).send({
         message: `You Can Not Restore, ${workspace_name} Quota Is Full`,
@@ -2663,7 +2661,7 @@ router.post("/restore", middleware, async (req, res) => {
 
           if (filesWithSameName.length >= users_policy.no_of_versions) {
             return res.status(400).send({
-              message: `You have already ${users_policy.no_of_versions} versions.`,
+              message: `You Have Already ${users_policy.no_of_versions} Versions.`,
             });
           }
         }
@@ -2710,7 +2708,7 @@ router.post("/restore", middleware, async (req, res) => {
         timestamp: Date.now(),
         system_ip: clientIP,
       });
-      return res.status(200).json({ message: "file restore Successfully" });
+      return res.status(200).json({ message: "File Restore Successfully" });
     } else {
       const [no_of_rows] = await Folder.update(
         { is_recycle: "false", deleted_at: null },
@@ -2718,7 +2716,7 @@ router.post("/restore", middleware, async (req, res) => {
       );
 
       if (no_of_rows === 0) {
-        return res.status(404).json({ message: "Folder not found" });
+        return res.status(404).json({ message: "Folder Not Found" });
       }
 
       const initial_restoredFolder = await Folder.findOne({
@@ -2746,7 +2744,7 @@ router.post("/restore", middleware, async (req, res) => {
             if (users_policy.recycle_bin == "false") {
               return res
                 .status(400)
-                .send({ message: "User do not have recyclebin policy" });
+                .send({ message: "User Do Not Have Recyclebin Policy" });
             }
           }
           await file.update({ is_recyclebin: "false", deleted_at: null });
@@ -2776,7 +2774,7 @@ router.post("/restore", middleware, async (req, res) => {
         system_ip: clientIP,
       });
 
-      return res.status(200).json({ message: "folder restore Successfully" });
+      return res.status(200).json({ message: "Folder Restore Successfully" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -2840,7 +2838,7 @@ router.post("/deleterestore", middleware, async (req, res) => {
                 deletedChunks.deletedCount === 0 &&
                 deletedFile.deletedCount === 0
               ) {
-                return res.status(404).json({ message: "File not found" });
+                return res.status(404).json({ message: "File Not Found" });
               }
               await FileUpload.destroy({
                 where: {
@@ -2877,7 +2875,7 @@ router.post("/deleterestore", middleware, async (req, res) => {
         timestamp: Date.now(),
         system_ip: clientIP,
       });
-      return res.status(200).json({ message: "file delete Successfully" });
+      return res.status(200).json({ message: "File Delete Successfully" });
       // });
     } else {
       const initial_delete_folder = await Folder.findOne({
@@ -2925,7 +2923,7 @@ router.post("/deleterestore", middleware, async (req, res) => {
         timestamp: Date.now(),
         system_ip: clientIP,
       });
-      return res.status(200).json({ message: "folder deleted sucessfully" });
+      return res.status(200).json({ message: "Folder Deleted Sucessfully" });
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -2954,7 +2952,7 @@ router.post("/metagetproperties", async (req, res) => {
     if (existingRecord) {
       return res.status(401).json({
         message:
-          "This doctype is already used with this file. Please try another doctype.",
+          "This Doctype Is Already Used With This File. Please Try Another Doctype.",
       });
     }
 
@@ -2976,12 +2974,12 @@ router.post("/metagetproperties", async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Properties updated successfully.",
+      message: "Properties Updated Successfully.",
       uploaddocmetadata: uploaddocmetadata[0],
     });
   } catch (error) {
     return res.status(500).json({
-      message: "An error occurred while retrieving properties_names.",
+      message: "An Error Occurred While Retrieving Properties_names.",
     });
   }
 });
@@ -3147,8 +3145,7 @@ router.post("/downloadfolders", middleware, async (req, res) => {
     const Foldername = await Folder.findOne({ where: { id: folder_id } });
 
     if (!Foldername) {
-      console.error("Folder not found in the database.");
-      return res.status(404).json({ message: "Folder not found." });
+      return res.status(404).json({ message: "Folder Not Found." });
     }
 
     // const folderToZip = path.join(
@@ -3251,12 +3248,12 @@ router.post("/downloadfolders", middleware, async (req, res) => {
         console.error("Error sending zip file:", error);
         res
           .status(500)
-          .json({ message: "Server error while sending the zip file." });
+          .json({ message: "Server Error While Sending The Zip File" });
       }
     });
   } catch (error) {
     console.error("Server error:", error);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -3341,10 +3338,10 @@ router.post("/cancelfileupload", async (req, res) => {
     //   return res.status(404).json({ message: 'File not found' });
     // }
     setTimeout(() => {
-      return res.status(200).json({ message: "File Upload canceled" });
+      return res.status(200).json({ message: "File Upload Canceled" });
     }, 3000);
   } catch (error) {
-    return res.status(400).json({ message: "file cancelling error" });
+    return res.status(400).json({ message: "File Cancelling Error" });
   }
 });
 
@@ -3373,7 +3370,7 @@ router.post("/sharedfile", middleware, async (req, res) => {
     }
     return res.status(200).json({ mergedData });
   } catch (error) {
-    return res.status(500).json({ message: "error in sending shared files" });
+    return res.status(500).json({ message: "Error In Sending Shared Files" });
   }
 });
 
@@ -3717,12 +3714,12 @@ router.post("/stopServer", (req, res) => {
 
         if (stopErr) {
           console.error(`Error stopping server: ${stopErr}`);
-          res.status(500).send("Error stopping server");
+          res.status(500).send("Error Stopping Server");
         } else {
-          console.log("Server stopped successfully");
+          console.log("Server Stopped Successfully");
           return res
             .status(200)
-            .send({ status: true, message: "Server stopped successfully" });
+            .send({ status: true, message: "Server Stopped Successfully" });
         }
       });
     });
@@ -3764,7 +3761,7 @@ const getDriveDetails = (callback) => {
       : "df -h /";
   exec(command, (error, stdout) => {
     if (error) {
-      console.error(`Error retrieving drive information: ${error.message}`);
+      console.error(`Error Retrieving Drive Information: ${error.message}`);
       callback(error, null);
       return;
     }

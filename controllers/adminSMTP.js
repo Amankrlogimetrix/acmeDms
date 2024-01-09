@@ -24,7 +24,7 @@ router.post('/createsmtp', (req, res) => {
         res.status(201).json(createdSMTP);
       })
       .catch(error => {
-         res.status(500).json({ error: 'Failed to create SMTP credential.' });
+         res.status(500).json({ error: 'Failed To Create SMTP Credential.' });
       });
   });
   
@@ -51,14 +51,14 @@ router.post('/editsmtp', (req, res) => {
               res.status(200).json(updatedSMTP);
             })
             .catch(error => {
-              res.status(500).json({ error: 'Failed to update SMTP credential.' });
+              res.status(500).json({ error: 'Failed To Update SMTP Credential.' });
             });
         } else {
-          res.status(404).json({ error: 'SMTP credential not found.' });
+          res.status(404).json({ error: 'SMTP Credential Not Found.' });
         }
       })
       .catch(error => {
-        res.status(500).json({ error: 'Failed to retrieve SMTP credential.' });
+        res.status(500).json({ error: 'Failed To Retrieve SMTP Credential.' });
       });
   });
 router.post('/getsmtp',async(req,res)=>{
@@ -66,7 +66,7 @@ router.post('/getsmtp',async(req,res)=>{
     const data  = await SMTP.findAll()
     return res.status(200).json({data})
    } catch (error) {
-    return res.status(400).json({message:"server error"})
+    return res.status(400).json({message:"Server Error"})
    }
 
 })
@@ -98,7 +98,7 @@ try {
     subject: subject,
     html: `<HTML> <img src="cid:acmeLogo" alt="acme_logo">
     <p>${message} Dear ${to_address},</p>
-    <p>The content has been shared with you.</p>
+    <p>The Content Has Been Shared With You.</p>
     <p>- File / Folder Name: png</p>
     <p>To access the content, click the following link to login: <a href="${process.env.HOST_FRONTEND}:${process.env.PORT_FRONTEND}/guestlogin">Login Link</a></p>
     <p>Your password is: 1234566</p>
@@ -120,11 +120,11 @@ try {
       console.log(error,"__this is error");
     }else{
       console.log(info,"all are perfect")
-        return res.status(200).json({success:true,message:"email sent successfully "})
+        return res.status(200).json({success:true,message:"Email Sent Successfully "})
     }
 })
 } catch (error) {
-    return res.status(400).json({success:false,message:"server error"})
+    return res.status(400).json({success:false,message:"Server Error"})
 }
 })
 

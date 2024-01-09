@@ -12,7 +12,7 @@ exports.register=(req,res)=>{
        .then(users=>{
            const user=users[0]
            if(user)
-           res.json({success:false,message:'User Already exist. Please Login'})
+           res.json({success:false,message:'User Already Exist. Please Login'})
            else
            {   
                User.create({
@@ -26,7 +26,7 @@ exports.register=(req,res)=>{
                })
                .catch(err=>{
                 //    console.log(err)
-                   res.json({success:false,message:'error while registering'})
+                   res.json({success:false,message:'Error While Registering'})
                })
 
            }
@@ -48,7 +48,7 @@ exports.loginUser=(req,res,next)=>{
          bcrypt.compare(userPassword, result.password).then(function(Cresult) {
               if(Cresult==true){
              
-               res.status(200).json({success:true,message:'User Log in Successful',token:jwtgenerator(result.dataValues.id,result.dataValues.username),username:result.dataValues.username}) 
+               res.status(200).json({success:true,message:'User Log In Successful',token:jwtgenerator(result.dataValues.id,result.dataValues.username),username:result.dataValues.username}) 
               }else
               {
                  res.status(401).json({success:false,message:'User Not Authorized'})

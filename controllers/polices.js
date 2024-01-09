@@ -102,7 +102,7 @@ router.post("/addpolicies", async (req, res) => {
       // If id is provided, update the existing policy
       policy = await Policy.findByPk(id);
       if (!policy) {
-        return res.status(404).json({ message: "Policy not found" });
+        return res.status(404).json({ message: "Policy Not Found" });
       }
 
       policy.policy_name = policy_name;
@@ -173,9 +173,9 @@ router.post("/addpolicies", async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Policy created/updated successfully", policy });
+      .json({ message: `Policy ${id? "Updated":"Created"} Successfully`, policy });
   } catch (error) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -196,7 +196,7 @@ router.post("/getpolicy", async (req, res) => {
   try {
     const data2 = await Policy.findAll();
 
-    return res.status(200).json({ message: "success", data2 });
+    return res.status(200).json({ message: "Success", data2 });
   } catch (error) {
     console.log(error);
   }
@@ -206,9 +206,9 @@ router.post("/deletepolicy", async (req, res) => {
   try {
     const id = req.body.id;
     await Policy.destroy({ where: { id: id } });
-    return res.status(200).json({ message: "Policy delete successfully" });
+    return res.status(200).json({ message: "Policy Delete Successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 

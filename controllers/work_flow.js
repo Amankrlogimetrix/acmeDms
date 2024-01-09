@@ -21,7 +21,7 @@ router.post("/createworkflow", middleware, async (req, res) => {
 
     // Validation
     if (!policy_name || !workspace_name || !group_admin || !user_email || user_email.length === 0) {
-      return res.status(400).send({ message: "Invalid input data" });
+      return res.status(400).send({ message: "Invalid Input Data" });
     }
 
     let workFlow;
@@ -30,7 +30,7 @@ router.post("/createworkflow", middleware, async (req, res) => {
     });
 
     if (existingWorkflow && (!id || (id && existingWorkflow.id !== id))) {
-      return res.status(400).send({ message: "Policy name already exists" });
+      return res.status(400).send({ message: "Policy Name Already Exists" });
     }
 
 
@@ -38,7 +38,7 @@ router.post("/createworkflow", middleware, async (req, res) => {
       // Update existing workflow
       workFlow = await work_flow.findByPk(id);
       if (!workFlow) {
-        return res.status(404).json({ message: "Workflow not found" });
+        return res.status(404).json({ message: "Workflow Not Found" });
       }
 
       workFlow.policy_name = policy_name;
@@ -49,7 +49,7 @@ router.post("/createworkflow", middleware, async (req, res) => {
       workFlow.l_2 = l_2;
 
       await workFlow.save();
-      return res.status(200).send({ message: "Workflow updated successfully", workFlow });
+      return res.status(200).send({ message: "Workflow Updated Successfully", workFlow });
     } else {
       // Create new workflow
       workFlow = await work_flow.create({
@@ -61,7 +61,7 @@ router.post("/createworkflow", middleware, async (req, res) => {
         l_2,
       });
 
-      return res.status(201).send({ message: "Workflow created successfully", workFlow });
+      return res.status(201).send({ message: "Workflow Created Successfully", workFlow });
     }
   } catch (error) {
     console.error(error);
@@ -84,9 +84,9 @@ router.post("/deleteworkflow", async (req, res) => {
   try {
     const id = req.body.id;
     await work_flow.destroy({ where: { id: id } });
-    return res.status(200).json({ message: "work flow delete successfully" });
+    return res.status(200).json({ message: "Work Flow Delete Successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 });
 

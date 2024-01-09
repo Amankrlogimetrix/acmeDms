@@ -16,7 +16,7 @@ router.post("/metaproperty", async (req, res) => {
     try {
       const property = await meta_property.findByPk(id);
       if (!property) {
-        return res.status(404).json({ message: "Property not found" });
+        return res.status(404).json({ message: "Property Not Found" });
       }
 
       await meta_property.update(
@@ -31,11 +31,11 @@ router.post("/metaproperty", async (req, res) => {
         }
       );
 
-      return res.status(200).json({ message: "Property updated successfully" });
+      return res.status(200).json({ message: "Property Updated Successfully" });
     } catch (error) {
       return res
         .status(500)
-        .json({ message: "Server Error: MetaProperty update" });
+        .json({ message: "Server Error: MetaProperty Update" });
     }
   } else {
     try {
@@ -72,7 +72,7 @@ router.post("metaproperties", async (req, res) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    return res.status(500).json({ message: "Server Error metaProperty" });
+    return res.status(500).json({ message: "Server Error MetaProperty" });
   }
 });
 
@@ -80,7 +80,6 @@ router.post("/getmetaproperties", async (req, res) => {
   try {
     const doctype = req.body.doctype;
     const workspace_name = req.body.workspace_name;
-    console.log({ doctype, workspace_name }, "__req.body");
     const meta_data = await docmetadata.findOne({
       where: {
         doctype: doctype,
@@ -88,7 +87,7 @@ router.post("/getmetaproperties", async (req, res) => {
       },
     });
     if (!meta_data) {
-      return res.status(404).send({ message: "No Meta Data found" });
+      return res.status(404).send({ message: "No Meta Data Found" });
     }
     const meta_data_id = meta_data.id.toString();
     const response = await meta_property.findAll({
@@ -101,7 +100,7 @@ router.post("/getmetaproperties", async (req, res) => {
     });
     return res.status(201).json(response);
   } catch (error) {
-    return res.status(500).json({ message: "Server Error metaPropertyget" });
+    return res.status(500).json({ message: "Server Error MetaPropertyget" });
   }
 });
 
@@ -138,9 +137,9 @@ router.post("/deleteproperties", async (req, res) => {
         id: propertyId,
       },
     });
-    return res.status(200).json({ message: "Property deleted successfully" });
+    return res.status(200).json({ message: "Property Deleted Successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Delete failed" });
+    return res.status(500).json({ message: "Delete Failed" });
   }
 });
 router.post("/metastatus", async (req, res) => {
@@ -148,7 +147,7 @@ router.post("/metastatus", async (req, res) => {
     const id = parseInt(req.body.id);
     const meta = await meta_property.findByPk(id);
     if (!meta) {
-      return res.status(404).json({ message: "doctype not found" });
+      return res.status(404).json({ message: "Doctype Not Found" });
     }
     const status = req.body.status;
     if (status === "true" || status === "false") {
@@ -156,12 +155,12 @@ router.post("/metastatus", async (req, res) => {
       await meta.save();
       return res
         .status(200)
-        .json({ message: `Properties have been ${status}` });
+        .json({ message: `Properties Have Been ${status}` });
     } else {
-      return res.status(400).json({ message: "Invalid status provided" });
+      return res.status(400).json({ message: "Invalid Status Provided" });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

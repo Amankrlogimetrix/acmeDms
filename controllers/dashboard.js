@@ -33,7 +33,7 @@ router.post("/countworkspace", middleware, async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      return res.status(404).json({ message: "User Not Found." });
     }
 
     let workspaceCount = 0;
@@ -132,7 +132,7 @@ router.post("/countworkspace", middleware, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal Server Error." });
   }
 });
 
@@ -647,12 +647,12 @@ router.post("/search", middleware, async (req, res) => {
     } else {
       results = await Fileupload.findAll(baseQuery);
       if (results.length === 0) {
-        return res.status(404).json({ message: "No search found" });
+        return res.status(404).json({ message: "No Search Found" });
       }
     }
     return res.json(results);
   } catch (error) {
-    return res.status(500).json({ error: "An error occurred" });
+    return res.status(500).json({ error: "An Error Occurred" });
   }
 });
 

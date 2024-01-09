@@ -17,7 +17,7 @@ exports.auth_worksapce = async (req, res) => {
     // Check if workspace_id already exists
     const existing_permission = await Workspace_auth.findOne({ where: { workspace_id: workspace_id } });
     if (existing_permission) {
-      return res.status(200).json({ message: 'Permission already applied for this workspace', permission: existing_permission });
+      return res.status(200).json({ message: 'Permission Already Applied For This Workspace', permission: existing_permission });
     }
     
     // Create new permission if workspace_id not found
@@ -33,7 +33,7 @@ exports.auth_worksapce = async (req, res) => {
     });
     return res.status(201).json(new_permission);
   } catch (err) {
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server Error' });
   }
 }
 
@@ -44,7 +44,7 @@ exports.get_permission= async (req, res) => {
           const workspace_permissions = await Workspace_auth.findAll();
           return res.status(200).json(workspace_permissions);
         }catch (err) {
-         return res.status(500).json({ message: "Server error" });
+         return res.status(500).json({ message: "Server Error" });
         }
 }
 
@@ -71,7 +71,7 @@ exports.edit_workspace_permission = async (req, res) => {
     // Check if workspace_id already exists
     const existing_permission = await Workspace_auth.findOne({ workspace_id: workspace_id });
     if (!existing_permission) {
-      return res.status(404).json({ message: 'Permission not found for this workspace' });
+      return res.status(404).json({ message: 'Permission Not Found For This Workspace' });
     }
 
     // Update the permission if it exists
@@ -87,6 +87,6 @@ exports.edit_workspace_permission = async (req, res) => {
 
     return res.status(200).json(updated_permission);
   } catch (err) {
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server Error' });
   }
 }

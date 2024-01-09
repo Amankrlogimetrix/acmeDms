@@ -41,9 +41,9 @@ if (groupId) {
           timestamp: Date.now(),
           system_ip:clientIP
           });
-        return res.status(200).json({ success: true, message: 'Group updated successfully' });
+        return res.status(200).json({ success: true, message: 'Group Updated Successfully' });
       } else {
-        res.status(404).json({ success: false, message: 'Group not found' });
+       return res.status(404).json({ success: false, message: 'Group Not Found' });
       }
     })
     .catch((err) => {
@@ -60,7 +60,7 @@ if (groupId) {
         system_ip:clientIP
         });
 
-      return res.status(201).json({ success: true, message: 'Group created successfully', group: newGroup });
+      return res.status(201).json({ success: true, message: 'Group Created Successfully', group: newGroup });
     })
     .catch((err) => {
       res.status(500).json({ success: false, message: 'Server Error' });
@@ -118,7 +118,7 @@ exports.get_groups = (req, res) => {
     .then((result) => {
       const totalPages = Math.ceil(result.count / limit);
       const response = {
-        message: "success",
+        message: "Success",
         data: result.rows,
         currentPage: page,
         count:result.count,
@@ -135,10 +135,10 @@ exports.get_groups = (req, res) => {
 exports.drop_groups = async(req,res)=>{
   try {
     const groups = await Group.findAll();
-    res.json({ success: true, message: 'Groups retrieved successfully', groups });
+    res.json({ success: true, message: 'Groups Retrieved Successfully', groups });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Error while getting groups' });
+    res.status(500).json({ success: false, message: 'Error While Getting Groups' });
   }
 }
 
@@ -159,7 +159,7 @@ exports.deleteGroup = async (req, res) => {
   })
     .then(() => {
      
-      res.status(200).json({ success: true, message: "delete successfully" });
+      res.status(200).json({ success: true, message: "Delete Successfully" });
     })
     const loggsfolder = await loggs.create({
       user_id:email,
@@ -169,6 +169,6 @@ exports.deleteGroup = async (req, res) => {
       system_ip:clientIP
       });
   }catch (err) {
-    return res.status(500).json({ success: false, message: 'group not found' });
+    return res.status(500).json({ success: false, message: 'Group Not Found' });
 }
 };

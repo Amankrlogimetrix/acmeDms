@@ -276,7 +276,7 @@ const deactive_user_and_guest = async () => {
     }
     await processDeletedFiles();
   } catch (error) {
-    return res.status(500).json({ message: "server error" });
+    return res.status(500).json({ message: "Server Error" });
   }
 };
 // cron.schedule("35 18 * * *", deactive_user_and_guest);
@@ -296,7 +296,7 @@ async function getNetworkUsage() {
     const networkStats = await si.networkStats();
     return networkStats;
   } catch (error) {
-    console.error("Error fetching network usage:", error.message);
+    console.error("Error Fetching Network Usage:", error.message);
     throw error;
   }
 }

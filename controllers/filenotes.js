@@ -14,7 +14,7 @@ router.post('/savenotes',middleware ,async(req,res)=>{
         })
         return res.status(200).json({message:true,details})
     } catch (error) {
-        return res.status(500).json({message:"server error"})
+        return res.status(500).json({message:"Server Error"})
     }
 })
 
@@ -28,7 +28,7 @@ router.post('/getnotes',async(req,res)=>{
         }})
         return res.status(200).json({message:true,details})
     } catch (error) {
-        return res.status(500).json({message:"server error"})
+        return res.status(500).json({message:"Server Error"})
     }
 })
 router.post('/deletenotes',async(req,res)=>{
@@ -40,9 +40,9 @@ router.post('/deletenotes',async(req,res)=>{
             id:id
           }
         })
-        return res.status(200).json({message:" notes  delete sucessfully ",})
+        return res.status(200).json({message:"Notes Delete Sucessfully ",})
     } catch (error) {
-        return res.status(500).json({message:"server error"})
+        return res.status(500).json({message:"Server Error"})
     }
 })
 

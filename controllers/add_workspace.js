@@ -21,7 +21,7 @@ exports.add_workspace = async (req, res) => {
       workspace = await Worksapce.findOne({ where: { id: id } });
       if (!workspace) {
         return res.status(404).json({
-          message: 'Workspace not found'
+          message: 'Workspace Not Found'
         });
       }
       await FileUpload.update(
@@ -52,7 +52,7 @@ exports.add_workspace = async (req, res) => {
 
       if (existingWorkspace) {
         return res.status(409).json({
-          message: 'Workspace name already exists'
+          message: 'Workspace Name Already Exists'
         });
       }
       workspace = await Worksapce.create({
@@ -66,13 +66,13 @@ exports.add_workspace = async (req, res) => {
       });
     }
     return res.status(200).json({
-      message: 'Workspace updated/created successfully',
+      message: `Workspace ${id ? "Updated":"Created"} Successfully`,
       workspace: workspace
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: 'Error updating/creating workspace'
+      message: `Error ${id ? "Updated":"Created"} Workspace`
     });
   }
 };
@@ -86,17 +86,17 @@ exports.deleteworksapce=async(req,res)=>{
     const cabinet = await Worksapce.findOne({ where: { id: id } });
     if (!cabinet) {
       return res.status(404).json({
-        message: 'workspace not found'
+        message: 'Workspace Not Found'
       });
     }
     await Worksapce.destroy({ where: { id: id } });
     return res.status(200).json({
-      message: 'workspace deleted successfully'
+      message: 'Workspace Deleted Successfully'
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: 'Error deleting workspace'
+      message: 'Error Deleting Workspace'
     });
   }
 };
@@ -115,7 +115,7 @@ exports.get_workspace = (req, res) => {
     .then((result) => {
       // const totalPages = Math.ceil(result.count / limit);
       const response = {
-        message: "success",
+        message: "Success",
         data: result.rows,
         default_name:"Incomming file"
         // currentPage: page,

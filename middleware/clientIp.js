@@ -7,8 +7,8 @@ const extractClientIP = (req, res, next) => {
         req.clientIP = ipv4Address;
         next();
     } catch (error) {
-        console.error('Error extracting client IP:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error Extracting Client IP:', error.message);
+       return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 

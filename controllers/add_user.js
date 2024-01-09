@@ -78,7 +78,7 @@ exports.register_new = async (req, res) => {
       if (!user) {
         return res
           .status(404)
-          .json({ success: false, message: "User not found" });
+          .json({ success: false, message: "User Not Found" });
       }
       const existingUser = await User.findOne({
         where: {
@@ -88,7 +88,7 @@ exports.register_new = async (req, res) => {
 
       if (existingUser && existingUser.email != email ) {
         return res.status(409).json({
-          message: "This employee code already exists.",
+          message: "This Employee Code Already Exists.",
         });
       }
 
@@ -111,11 +111,11 @@ exports.register_new = async (req, res) => {
       });
       return res
         .status(200)
-        .json({ status: true, message: "User details updated successfully" });
+        .json({ status: true, message: "User Details Updated Successfully" });
     } catch (err) {
       return res
         .status(500)
-        .json({ success: false, message: "Error while updating user details" });
+        .json({ success: false, message: "Error While Updating User Details" });
     }
   } else {
     try {
@@ -129,10 +129,10 @@ exports.register_new = async (req, res) => {
         if (existingUser.email === email) {
           return res
             .status(409)
-            .json({ message: "This email already exists." });
+            .json({ message: "This Email Already Exists." });
         } else {
           return res.status(409).json({
-            message: "This employee code already exists.",
+            message: "This Employee Code Already Exists.",
           });
         }
       }
@@ -157,13 +157,13 @@ exports.register_new = async (req, res) => {
 
       return res.status(201).json({
         success: true,
-        message: "Successfully created new user, login now",
+        message: "Successfully Created New User, Login Now",
       });
     } catch (err) {
       console.log(err);
       return res
         .status(500)
-        .json({ success: false, message: "Error while registering new user" });
+        .json({ success: false, message: "Error While Registering New User" });
     }
   }
 };
@@ -179,7 +179,7 @@ exports.loginUser = async (req, res, next) => {
     },
   });
   if (!user_email) {
-    return res.status(404).send({ message: "User not found" });
+    return res.status(404).send({ message: "User Not Found" });
   }
   let userMail = user_email.dataValues.email;
 
@@ -201,7 +201,7 @@ exports.loginUser = async (req, res, next) => {
     if (res2.user_status === "false") {
       return res
         .status(401)
-        .json({ status: false, message: "your account has been disabled" });
+        .json({ status: false, message: "Your Account Has Been Disabled" });
     }
 
     loggs
@@ -220,7 +220,7 @@ exports.loginUser = async (req, res, next) => {
           return res.status(404).json({
             success: false,
             message:
-              "your account has been disabled , because you have not login from last 10 days",
+              "Your Account Has Been Disabled , Because You Have Not Login From Last 10 Days",
           });
         }
       });
@@ -332,7 +332,7 @@ exports.loginUser = async (req, res, next) => {
                 success: true,
                 user_id: user_id,
                 email: userMail,
-                message: "User Log in Successful",
+                message: "User Log In Successful",
                 name: NAME,
                 user_type: user_type.user_type,
                 teamspace: team_space1,
@@ -377,7 +377,7 @@ exports.getalluser = (req, res) => {
     .then((result) => {
       const totalPages = Math.ceil(result.count / limit);
       const response = {
-        message: "success",
+        message: "Success",
         data: result.rows,
         currentPage: page,
         count: result.count,
@@ -424,7 +424,7 @@ exports.edituser = (req, res) => {
     .catch(() => {
       return res
         .status(500)
-        .json({ success: false, message: "user not found" });
+        .json({ success: false, message: "User Not Found" });
     });
 };
 //  delete user
@@ -444,7 +444,7 @@ exports.deleteuser = async (req, res) => {
           user_id: id,
         },
       });
-      res.status(200).json({ success: true, message: "delete successfully" });
+      res.status(200).json({ success: true, message: "Successfully Delete" });
     });
     const loggsfolder = await loggs.create({
       user_id: email,
@@ -454,7 +454,7 @@ exports.deleteuser = async (req, res) => {
       system_ip: clientIP,
     });
   } catch (err) {
-    return res.status(500).json({ success: false, message: "user not found" });
+    return res.status(500).json({ success: false, message: "User Not Found" });
   }
 };
 
@@ -467,18 +467,18 @@ exports.blockeduser = async (req, res) => {
 
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User Not Found" });
     }
     user.user_status = req.body.user_status.toString();
     await user.save();
     return res.status(200).json({
-      message: `User has been ${
-        user.user_status === "true" ? "enabled" : "disabled"
+      message: `User Has Been ${
+        user.user_status === "true" ? "Enabled" : "Disabled"
       }`,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -493,10 +493,10 @@ exports.user_list = (req, res) => {
     },
   })
     .then((data) => {
-      return res.status(200).json({ message: "success", data });
+      return res.status(200).json({ message: "Success", data });
     })
     .catch(() => {
-      res.status(500).json({ success: false, message: "user not found" });
+      res.status(500).json({ success: false, message: "User Not Found" });
     });
 };
 //  user_drop_down
@@ -507,12 +507,12 @@ exports.user_dropdown = (req, res) => {
     },
   })
     .then((data) => {
-      return res.status(200).json({ message: "success", data });
+      return res.status(200).json({ message: "Success", data });
     })
     .catch(() => {
       return res
         .status(500)
-        .json({ success: false, message: "user not found" });
+        .json({ success: false, message: "User Not Found" });
     });
 };
 
@@ -523,14 +523,14 @@ exports.get_roles = async (req, res) => {
     const userRoles = ["admin", "moderator", "contributor", "viewer"];
     res.json({
       success: true,
-      message: "User roles retrieved successfully",
+      message: "User Roles Retrieved Successfully",
       userRoles,
     });
   } catch (err) {
     console.error(err);
     res
       .status(500)
-      .json({ success: false, message: "Error while getting user roles" });
+      .json({ success: false, message: "Error While Getting User Roles" });
   }
 };
 
